@@ -76,7 +76,7 @@ public class PostForgotPasswordCommandHandler(
                 port = $":{refererUri.Port}";
             }
             
-            resetPasswordUrl = $"{refererUri.Scheme}://{refererUri.Host}{port}?code={routeValues["code"]}&email={routeValues["email"]}";
+            resetPasswordUrl = $"{refererUri.Scheme}://{refererUri.Host}{port}/resetPassword?code={routeValues["code"]}&email={routeValues["email"]}";
         }
         
         
