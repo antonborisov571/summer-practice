@@ -1,0 +1,32 @@
+.chatsWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f2f5;
+  padding: 20px;
+  width: 100%;
+}
+
+.testItemCard {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.testItemCard h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.testItemCard p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #666;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}

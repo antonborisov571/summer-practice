@@ -1,0 +1,61 @@
+.createTestWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 900px;
+}
+
+.inputsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 900px;
+}
+
+.inputTimesWrapper {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 22px;
+  max-height: 50px;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 60px;
+  align-items: center;
+}
+
+.input {
+  box-sizing: border-box;
+  outline: none;
+  appearance: none;
+  scrollbar-width: none;
+  resize: none;
+  min-width: 723px;
+  min-height: 100px;
+  background-color: #fafafa;
+  border: 0.01rem solid;
+  border-color: #dbdbdb;
+  border-radius: 10px;
+  color: #494949;
+  font-size: 10pt;
+  font-weight: 200;
+  letter-spacing: 0.04rem;
+  padding: 0.7rem;
+  position: relative;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.buttonsWrapper {
+  display: flex;
+  flex-direction: row;
+  margin: 50px 0 0 0;
+  justify-content: space-between;
+  gap: 100px;
+}
