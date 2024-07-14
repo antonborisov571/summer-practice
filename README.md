@@ -50,7 +50,7 @@
 
 Эта команда создаст и запустит все указанные в docker-compose.yml контейнеры. Приложение будет доступно по адресу http://localhost:8080.
 
-Также на платформу можно перейти по ссылке: https://99de-95-68-239-100.ngrok-free.app
+Также на платформу можно перейти по ссылке: https://unbiased-splendid-terrapin.ngrok-free.app
 
 # Kfoodle.SFTP
 
