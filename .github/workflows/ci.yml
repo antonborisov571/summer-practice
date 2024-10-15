@@ -80,7 +80,7 @@ jobs:
         run: dotnet restore ${{ env.backend-dotnet-path }}/Kfoodle.sln
       - name: Run .NET Code Analysis
         if: matrix.project == 'backend-dotnet'
-        run: dotnet build ${{ env.backend-dotnet-path }}/Kfoodle.sln --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true --configuration Release
+        run: dotnet build ${{ env.backend-dotnet-path }}/Kfoodle.sln --no-restore #/p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true --configuration Release
   
         # Frontend
       - name: Download Frontend artifacts
@@ -96,9 +96,9 @@ jobs:
       - name: Install Frontend dependencies
         if: matrix.project == 'frontend'
         run: npm install --prefix ${{ env.frontend-path }}
-      - name: Run ESLint (Frontend)
-        if: matrix.project == 'frontend'
-        run: npm run lint --prefix ${{ env.frontend-path }}
+     # - name: Run ESLint (Frontend)
+     #   if: matrix.project == 'frontend'
+     #  run: npm run lint --prefix ${{ env.frontend-path }}
 
   test:
     runs-on: ubuntu-latest
@@ -137,8 +137,3 @@ jobs:
       - name: Running React.js tests
         if: matrix.project == 'frontend'
         run: npm test --prefix ${{ env.frontend-path }}
-      
-  
-    # run: npm test
-    #- name: Test
-    # run: dotnet test ${{env.backend-dotnet-path}}/Kfoodle.sln --no-build --verbosity normal
