@@ -5,6 +5,9 @@ name: .NET
 
 on: [push]
 
+env:
+  backend-dotnet-path: './backend/Kfoodle/'
+
 jobs:
   build:
 
@@ -16,11 +19,9 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Мoving to a folder
-      run: cd ./backend/Kfoodle
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ${{env.backend-dotnet-path}}/Kfoodle.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ${{env.backend-dotnet-path}}/Kfoodle.sln --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ${{env.backend-dotnet-path}}/Kfoodle.sln --no-build --verbosity normal
