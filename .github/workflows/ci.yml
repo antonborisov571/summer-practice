@@ -5,6 +5,8 @@ on: [push]
 env:
   backend-dotnet-path: './backend/Kfoodle/'
   frontend-path: './frontend/kfoodle/'
+  node-version: '20.x'
+  dotnet-version: '8.0.x'
 
 jobs:
   build:
@@ -30,6 +32,12 @@ jobs:
     - name: Build .NET app
       if: matrix.project == 'backend-dotnet'
       run: dotnet build ${{ env.backend-dotnet-path }}/Kfoodle.sln --no-restore
+    - name: Upload .NET build artifacts
+      if: matrix.project == 'backend-dotnet'
+      uses: actions/upload-artifact@v4
+      with:
+        name: backend-dotnet-artifacts
+        path: ${{ env.backend-dotnet-path }}/**/bin/Release/net8.0/**
 
     # Frontend
     - name: Use Node.js
@@ -43,6 +51,56 @@ jobs:
     - name: Build React.js app
       if: matrix.project == 'frontend'
       run: npm run build --prefix ${{ env.frontend-path }}
+    - name: Upload React.js app artifacts
+      if: matrix.project == 'frontend'
+      uses: actions/upload-artifact@v4
+      with:
+        name: frontend-artifacts
+        path: ${{ env.frontend-path }}/dist/ 
+
+      
+  static_analysis:
+    runs_on: ubuntu-latest
+    needs: build
+    
+    strategy:
+      matrix:
+        project: ['backend-dotnet', 'frontend']
+
+    steps:
+      # Backend
+      - uses: actions/checkout@v4
+      - name: Download .NET artifacts
+        if: matrix.project == 'backend-dotnet'
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-dotnet-artifacts
+      - name: Install .NET dependencies
+        if: matrix.project == 'backend-dotnet'
+        run: dotnet restore ${{ env.backend-dotnet-path }}/Kfoodle.sln
+      - name: Run .NET Code Analysis
+        if: matrix.project == 'backend-dotnet'
+        run: dotnet build ${{ env.backend-dotnet-path }}/Kfoodle.sln --no-restore /p:RunAnalyzersDuringBuild=true /p:TreatWarningsAsErrors=true --configuration Release
+
+        # Frontend
+      - name: Download Frontend artifacts
+        if: matrix.project == 'frontend'
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-artifacts
+      - name: Install Node.js (Frontend)
+        if: matrix.project == 'frontend'
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install Frontend dependencies
+        if: matrix.project == 'frontend'
+        run: npm install --prefix ${{ env.frontend-path }}
+      - name: Run ESLint (Frontend)
+        if: matrix.project == 'frontend'
+        run: npm run lint --prefix ${{ env.frontend-path }}
+    
+  
     # run: npm test
     #- name: Test
     # run: dotnet test ${{env.backend-dotnet-path}}/Kfoodle.sln --no-build --verbosity normal
