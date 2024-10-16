@@ -58,12 +58,3 @@ services:
       value: 80
     - key: VITE_API_URL
       value: http://backend:8080
-
-  - type: web
-    name: kfoodle-sftp
-    runtime: docker
-    image: emberstack/sftp
-    - key: USERS
-      value: demo:demo:1001:1001
-    - key: PORT
-      value: "22"
