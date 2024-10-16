@@ -2,34 +2,10 @@
 # Render Blueprint for Kfoodle Application                       #
 #################################################################
 
+# previewsEnabled: true # Uncomment to enable preview environments
+# previewsExpireAfterDays: 2 # Set expiration for preview environments
+
 services:
-  # PostgreSQL database service
-  - type: postgres
-    name: kfoodle-db
-    databaseName: kfoodle_database
-    user: postgres
-    password: postgres
-    plan: free # or choose the plan that fits your needs
-    ipAllowList: # Optional
-      - source: 0.0.0.0/0
-        description: allow all IPs
-
-  # SFTP service
-  - type: web
-    name: kfoodle-sftp
-    runtime: docker
-    repo: https://github.com/your-repo/sftp # Replace with your actual SFTP repo
-    dockerfile: Dockerfile # Specify your Dockerfile if not at root
-    ports:
-      - port: 2222
-        targetPort: 22
-    envVars:
-      - key: USERS
-        value: demo:demo:1001:1001
-    disk:
-      name: sftp_data
-      mountPath: /home
-
   # Backend service
   - type: web
     name: kfoodle-backend
@@ -85,7 +61,6 @@ services:
       - key: ConnectionStrings__DefaultConnection
         value: Host=kfoodle-db;Username=postgres;Password=postgres;Database=kfoodle_database
     dependsOn:
-      - kfoodle-db
       - kfoodle-sftp
 
   # Frontend service
@@ -103,6 +78,26 @@ services:
     dependsOn:
       - kfoodle-backend
 
-# Environment groups can be defined here if needed
+  # SFTP service
+  - type: web
+    name: kfoodle-sftp
+    runtime: docker
+    repo: https://github.com/your-repo/sftp # Replace with your actual SFTP repo
+    dockerfile: Dockerfile # Specify your Dockerfile if not at root
+    ports:
+      - port: 2222
+        targetPort: 22
+    envVars:
+      - key: USERS
+        value: demo:demo:1001:1001
+    disk:
+      name: sftp_data
+      mountPath: /home
 
-# List all PostgreSQL databases here (already included above)
+# Define the PostgreSQL database separately
+databases:
+  - name: kfoodle-db
+    databaseName: kfoodle_database
+    user: postgres
+    password: postgres
+    plan: free # Choose an appropriate plan for your needs
