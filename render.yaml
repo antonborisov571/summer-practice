@@ -3,6 +3,7 @@ services:
     name: kfoodle-backend
     runtime: docker
     dockerfilePath: ./backend/Kfoodle/Dockerfile
+    envVars:
     - key: PORT
       value: 8080
     - key: JWT__ValidAudience
@@ -54,6 +55,7 @@ services:
     name: kfoodle-frontend
     runtime: docker
     dockerfilePath: ./frontend/kfoodle/Dockerfile
+    envVars:
     - key: PORT
       value: 80
     - key: VITE_API_URL
