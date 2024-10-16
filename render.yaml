@@ -1,0 +1,77 @@
+services:
+  db:
+    type: docker
+    env: docker
+    dockerfilePath: ./backend/Kfoodle/Dockerfile
+    buildCommand: |
+      docker build -t kfoodle_database postgres:latest
+    startCommand: |
+      docker run \
+        --name kfoodle_database \
+        -e POSTGRES_USER=postgres \
+        -e POSTGRES_PASSWORD=postgres \
+        -e POSTGRES_DB=kfoodle_database \
+        -p 5432:5432 \
+        -v db_data:/var/lib/postgresql/data \
+        postgres:latest
+
+  sftp:
+    type: docker
+    env: docker
+    dockerfilePath: ./backend/Kfoodle/Dockerfile
+    buildCommand: |
+      docker build -t sftp emberstack/sftp
+    startCommand: |
+      docker run \
+        --name sftp \
+        -p 2222:22 \
+        -e USERS=demo:demo:1001:1001 \
+        -v sftp_data:/home \
+        emberstack/sftp
+
+  backend:
+    type: docker
+    env: docker
+    dockerfilePath: ./backend/Kfoodle/Dockerfile
+    buildCommand: |
+      docker build -t backend:latest ./backend/Kfoodle/
+    startCommand: |
+      docker run \
+        --name backend \
+        -p 5201:8080 \
+        --env JWT__ValidAudience=Blablacar \
+        --env JWT__ValidIssuer=Blablacar \
+        --env JWT__Secret='this is my custom Secret key for authentication' \
+        --env EmailSettings__FromName='Антон Борисов' \
+        --env EmailSettings__EmailAddress=borisov.as2015@yandex.ru \
+        --env EmailSettings__Password='arigudeqaaztkkfn' \
+        --env EmailSettings__SMTPServerHost=smtp.yandex.ru \
+        --env EmailSettings__SMTPServerPort=465 \
+        --env Authentication__VK__AppId=51903164 \
+        --env Authentication__VK__AppSecret=t1cFz2DZLq8KsxhpYPz0 \
+        --env Authentication__VK__ServiceToken=991675219916752199167521ca9a018f9d9991699167521ff0a8c49759c08682aca5eae \
+        --env Authentication__VK__VkGetInfoUserUri=https://api.vk.com/method/auth.getProfileInfoBySilentToken \
+        --env Authentication__VK__VkApiVersion=5.199 \
+        --env Authentication__Yandex__AppId=51e4d0a49d994b6280c3fca62af75566 \
+        --env Authentication__Yandex__AppSecret=7ea83902a7ee421381f0b4e6be4d7e9c \
+        --env Sftp__Host=sftp \
+        --env Sftp__Port=22 \
+        --env Sftp__User=demo \
+        --env Sftp__Password=demo \
+        --env SearchCity__Host=https://kladr-api.ru/api.php \
+        --env SearchCity__Token=kaeYEGATH2fbe7Q67YR6aQRySyZznBz5 \
+        --env ConnectionStrings__DefaultConnection='Host=db;Username=postgres;Password=postgres;Database=kfoodle_database' \
+        backend:latest
+
+  frontend:
+    type: docker
+    env: docker
+    dockerfilePath: ./frontend/kfoodle/Dockerfile
+    buildCommand: |
+      docker build -t frontend:latest ./frontend/kfoodle
+    startCommand: |
+      docker run \
+        --name frontend \
+        -p 8080:80 \
+        --env VITE_API_URL=http://backend:8080 \
+        frontend:latest
