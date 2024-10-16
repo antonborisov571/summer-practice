@@ -1,103 +1,69 @@
-#################################################################
-# Render Blueprint for Kfoodle Application                       #
-#################################################################
-
-# previewsEnabled: true # Uncomment to enable preview environments
-# previewsExpireAfterDays: 2 # Set expiration for preview environments
-
 services:
-  # Backend service
   - type: web
     name: kfoodle-backend
     runtime: docker
-    repo: https://github.com/your-repo/backend # Replace with your actual backend repo
-    dockerfile: backend/Kfoodle/Dockerfile
-    ports:
-      - port: 5201
-        targetPort: 8080
-    envVars:
-      - key: JWT__ValidAudience
-        value: Blablacar
-      - key: JWT__ValidIssuer
-        value: Blablacar
-      - key: JWT__Secret
-        value: this is my custom Secret key for authentication
-      - key: EmailSettings__FromName
-        value: Антон Борисов
-      - key: EmailSettings__EmailAddress
-        value: borisov.as2015@yandex.ru
-      - key: EmailSettings__Password
-        value: arigudeqaaztkkfn
-      - key: EmailSettings__SMTPServerHost
-        value: smtp.yandex.ru
-      - key: EmailSettings__SMTPServerPort
-        value: "465"
-      - key: Authentication__VK__AppId
-        value: "51903164"
-      - key: Authentication__VK__AppSecret
-        value: t1cFz2DZLq8KsxhpYPz0
-      - key: Authentication__VK__ServiceToken
-        value: 991675219916752199167521ca9a018f9d9991699167521ff0a8c49759c08682aca5eae
-      - key: Authentication__VK__VkGetInfoUserUri
-        value: https://api.vk.com/method/auth.getProfileInfoBySilentToken
-      - key: Authentication__VK__VkApiVersion
-        value: "5.199"
-      - key: Authentication__Yandex__AppId
-        value: 51e4d0a49d994b6280c3fca62af75566
-      - key: Authentication__Yandex__AppSecret
-        value: 7ea83902a7ee421381f0b4e6be4d7e9c
-      - key: Sftp__Host
-        value: kfoodle-sftp
-      - key: Sftp__Port
-        value: "22"
-      - key: Sftp__User
-        value: demo
-      - key: Sftp__Password
-        value: demo
-      - key: SearchCity__Host
-        value: https://kladr-api.ru/api.php
-      - key: SearchCity__Token
-        value: kaeYEGATH2fbe7Q67YR6aQRySyZznBz5
-      - key: ConnectionStrings__DefaultConnection
-        value: Host=kfoodle-db;Username=postgres;Password=postgres;Database=kfoodle_database
-    dependsOn:
-      - kfoodle-sftp
+    dockerfilePath: ./backend/Kfoodle/Dockerfile
+    - key: PORT
+      value: 8080
+    - key: JWT__ValidAudience
+      value: Blablacar
+    - key: JWT__ValidIssuer
+      value: Blablacar
+    - key: JWT__Secret
+      value: this is my custom Secret key for authentication
+    - key: EmailSettings__FromName
+      value: Антон Борисов
+    - key: EmailSettings__EmailAddress
+      value: borisov.as2015@yandex.ru
+    - key: EmailSettings__Password
+      value: arigudeqaaztkkfn
+    - key: EmailSettings__SMTPServerHost
+      value: smtp.yandex.ru
+    - key: EmailSettings__SMTPServerPort
+      value: "465"
+    - key: Authentication__VK__AppId
+      value: "51903164"
+    - key: Authentication__VK__AppSecret
+      value: t1cFz2DZLq8KsxhpYPz0
+    - key: Authentication__VK__ServiceToken
+      value: 991675219916752199167521ca9a018f9d9991699167521ff0a8c49759c08682aca5eae
+    - key: Authentication__VK__VkGetInfoUserUri
+      value: https://api.vk.com/method/auth.getProfileInfoBySilentToken
+    - key: Authentication__VK__VkApiVersion
+      value: "5.199"
+    - key: Authentication__Yandex__AppId
+      value: 51e4d0a49d994b6280c3fca62af75566
+    - key: Authentication__Yandex__AppSecret
+      value: 7ea83902a7ee421381f0b4e6be4d7e9c
+    - key: Sftp__Host
+      value: sftp
+    - key: Sftp__Port
+      value: "22"
+    - key: Sftp__User
+      value: demo
+    - key: Sftp__Password
+      value: demo
+    - key: SearchCity__Host
+      value: https://kladr-api.ru/api.php
+    - key: SearchCity__Token
+      value: kaeYEGATH2fbe7Q67YR6aQRySyZznBz5
+    - key: ConnectionStrings__DefaultConnection
+      value: Host=db;Username=postgres;Password=postgres;Database=kfoodle_database
 
-  # Frontend service
   - type: web
     name: kfoodle-frontend
     runtime: docker
-    repo: https://github.com/your-repo/frontend # Replace with your actual frontend repo
-    dockerfile: frontend/kfoodle/Dockerfile
-    ports:
-      - port: 8080
-        targetPort: 80
-    envVars:
-      - key: VITE_API_URL
-        value: http://kfoodle-backend:8080
-    dependsOn:
-      - kfoodle-backend
+    dockerfilePath: ./frontend/kfoodle/Dockerfile
+    - key: PORT
+      value: 80
+    - key: VITE_API_URL
+      value: http://backend:8080
 
-  # SFTP service
-  - type: web
+  - type: service
     name: kfoodle-sftp
     runtime: docker
-    repo: https://github.com/your-repo/sftp # Replace with your actual SFTP repo
-    dockerfile: Dockerfile # Specify your Dockerfile if not at root
-    ports:
-      - port: 2222
-        targetPort: 22
-    envVars:
-      - key: USERS
-        value: demo:demo:1001:1001
-    disk:
-      name: sftp_data
-      mountPath: /home
-
-# Define the PostgreSQL database separately
-databases:
-  - name: kfoodle-db
-    databaseName: kfoodle_database
-    user: postgres
-    password: postgres
-    plan: free # Choose an appropriate plan for your needs
+    image: emberstack/sftp
+    - key: USERS
+      value: demo:demo:1001:1001
+    - key: PORT
+      value: "22"
