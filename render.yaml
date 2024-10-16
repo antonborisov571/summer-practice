@@ -28,16 +28,12 @@ databases:
         value: kfoodle_database
 
   - name: kfoodle-sftp
+    type: web
     plan: free
     image: emberstack/sftp
     envVars:
       - key: USERS
         value: demo:demo:1001:1001
-    ports:
-      - "2222:22"
-    volumes:
-      - name: sftp_data
-        mountPath: /home
 
 volumes:
   - name: db_data
