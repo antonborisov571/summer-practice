@@ -59,7 +59,7 @@ services:
     - key: VITE_API_URL
       value: http://backend:8080
 
-  - type: service
+  - type: web
     name: kfoodle-sftp
     runtime: docker
     image: emberstack/sftp
